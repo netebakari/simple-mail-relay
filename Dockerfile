@@ -10,6 +10,7 @@ RUN rm -f input.txt
 RUN gem install mail aws-sdk-s3
 
 RUN  mv /etc/postfix/main.cf /etc/postfix/main.cf.org
+COPY postfix/mailname /etc/
 COPY postfix/main.cf /etc/postfix/
 COPY postfix/master.cf /etc/postfix/
 
@@ -19,20 +20,18 @@ COPY opendkim/TrustedHosts  /etc/opendkim/
 
 # メールのログ関係
 RUN  mkdir /opt/maillog
+RUN  mkdir /opt/maillog/log
+RUN  mkdir /opt/maillog/log/list
+RUN  mkdir /opt/maillog/log/raw
 COPY postfix/log.rb /opt/maillog
 RUN  chmod -R 777 /opt/maillog
-
-RUN  mkdir /maillog
-RUN  mkdir /mailraw
-RUN  chmod -R 777 /maillog
-RUN  chmod -R 777 /mailraw
 RUN  echo 'logging: "|/usr/bin/ruby /opt/maillog/log.rb"' >> /etc/aliases
 RUN  newaliases
 
 COPY  startup.sh /tmp
 COPY  setup.sh   /tmp
 
-CMD ["/bin/bash", "setup.sh"]
-#ENTRYPOINT ["/bin/bash", "/tmp/startup.sh"]
+#CMD ["/bin/bash", "/tmp/startup.sh"]
+ENTRYPOINT ["/bin/bash", "/tmp/startup.sh"]
 
 EXPOSE 25
