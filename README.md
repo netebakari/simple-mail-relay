@@ -13,8 +13,8 @@ Ubuntu 20.04 LTS + Docker version 19.03.8
 標準出力に吐いているので `Docker logs` で見られる。
 
 ### メールログ
-* `log/list` 以下にメールのタイムスタンプやタイトル、送信先を1行にまとめたCSVがたまる。
-* `log/raw` にはメール1件を1個のテキストファイルにしたログがたまる。容量が膨大になるので適当に削除する必要がある。
+* `logs/list` 以下にメールのタイムスタンプやタイトル、送信先を1行にまとめたCSVがたまる。
+* `logs/raw` にはメール1件を1個のテキストファイルにしたログがたまる。容量が膨大になるので適当に削除する必要がある。
 
 ## 実行方法
 ### 1. DKIM設定
@@ -22,18 +22,24 @@ Ubuntu 20.04 LTS + Docker version 19.03.8
 複数ドメインに対応させる場合も同じ階層に入れる。
 また公開鍵をDNSに登録する。
 
-### 2. docker run
+### 2. ログ用ディレクトリ作成
+```
+mkdir logs; mkdir logs/list; mkdir logs/raw
+chmod -R 777 logs
+```
+
+### 3. docker run
 ```sh
 docker run --rm -d \
   -p 25:25 -p 1025:25 \
   -v "$(pwd)/keys:/keys" \
-  -v "$(pwd)/log/raw:/mailraw" \
-  -v "$(pwd)/log/list:/maillist" \
+  -v "$(pwd)/logs/raw:/mailraw" \
+  -v "$(pwd)/logs/list:/maillist" \
   ubuntu-postfix-opendkim
 ```
 
-### テスト送信
-上記のように実行すれば25番または1025番ポートにTELNETでアクセスしてメールが出せるはず。
+### 4. テスト送信
+これで25番または1025番ポートにTELNETでアクセスしてメールが出せるはず。
 
 ```
 HELO localhost

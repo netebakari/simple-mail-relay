@@ -7,7 +7,7 @@ RUN apt-get -y --no-install-recommends install postfix < input.txt
 RUN apt-get -y --no-install-recommends install opendkim
 RUN rm -f input.txt
 
-RUN gem install mail aws-sdk-s3
+RUN gem install mail
 
 RUN  mv /etc/postfix/main.cf /etc/postfix/main.cf.org
 COPY postfix/mailname /etc/
