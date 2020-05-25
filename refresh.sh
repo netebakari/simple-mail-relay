@@ -1,4 +1,10 @@
 #! /bin/bash
 docker build -t ubuntu-postfix-opendkim .
-#docker run --rm -it -v "$(pwd)/keys:/var/keys" -v "$(pwd)/log/raw:/mailraw" -v "$(pwd)/log/list:/maillist" ubuntu-postfix-opendkim /bin/bash
-docker run -d -p 25:25 -p 1025:25 --rm -v "$(pwd)/keys:/keys" -v "$(pwd)/log/raw:/mailraw" -v "$(pwd)/log/list:/maillist" ubuntu-postfix-opendkim
+docker run --rm -d \
+  -p 25:25 -p 1025:25 \
+  -v "$(pwd)/keys:/keys" \
+  -v "$(pwd)/logs/raw:/mailraw" \
+  -v "$(pwd)/logs/list:/maillist" \
+  --log-opt max-size=50m \
+  --log-opt max-file=500 \
+  ubuntu-postfix-opendkim
