@@ -25,6 +25,8 @@ RUN  mkdir /opt/maillog/log/list
 RUN  mkdir /opt/maillog/log/raw
 COPY postfix/log.rb /opt/maillog
 RUN  chmod -R 777 /opt/maillog
+RUN  mkdir /mailraw;  chmod 777 /mailraw
+RUN  mkdir /maillsit; chmod 777 /maillsit
 RUN  echo 'logging: "|/usr/bin/ruby /opt/maillog/log.rb"' >> /etc/aliases
 RUN  newaliases
 

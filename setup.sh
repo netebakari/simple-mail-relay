@@ -21,5 +21,3 @@ cat /tmp/domains.txt | \
 
 /bin/bash /tmp/copy.sh
 chown -R opendkim:opendkim /etc/dkimkeys/
-
-service opendkim start
