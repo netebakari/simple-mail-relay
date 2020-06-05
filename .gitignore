@@ -1,2 +1,5 @@
-keys/*
 logs/
+keys/*
+!example.com.private
+!example.com.public
+
