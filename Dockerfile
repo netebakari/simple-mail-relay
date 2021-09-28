@@ -1,14 +1,7 @@
 FROM ubuntu:20.10
 
-RUN apt-get -y update
-RUN apt-get -y --no-install-recommends install openssl telnet vim ruby tzdata 
-RUN echo "2" > input.txt
-RUN apt-get -y --no-install-recommends install postfix < input.txt
-RUN apt-get -y --no-install-recommends install opendkim
-RUN rm -f input.txt
-
+RUN apt -y update && yes "2" | apt -y --no-install-recommends install openssl telnet vim ruby tzdata postfix opendkim
 RUN gem install mail
-
 RUN  mv /etc/postfix/main.cf /etc/postfix/main.cf.org
 COPY postfix/mailname /etc/
 COPY postfix/main.cf /etc/postfix/

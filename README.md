@@ -11,11 +11,11 @@
 * Postfixのログは標準出力に出して取り回しを良くしたい
 
 ## 動作確認環境
-Ubuntu 20.04 LTS + Docker 19.03.8
+Ubuntu 20.04 LTS + Docker 20.10.7
 
 ## ログ
 ### Postfixのログ
-標準出力に吐いているので `Docker logs` で見られる。
+標準出力に吐いているので `Docker logs` または `docker-compose logs` で見られる。
 
 ### メールログ
 * `logs/list` 以下にメールのタイムスタンプやタイトル、送信先を1行にまとめたCSVがたまる。
