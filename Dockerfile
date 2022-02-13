@@ -1,4 +1,4 @@
-FROM ubuntu:20.10
+FROM ubuntu:20.04
 
 RUN apt -y update && yes "2" | apt -y --no-install-recommends install openssl telnet vim ruby tzdata postfix opendkim
 RUN gem install mail
