@@ -1,4 +1,4 @@
-FROM ubuntu:20.04
+FROM ubuntu:22.04
 
 RUN apt -y update && yes "2" | apt -y --no-install-recommends install openssl telnet vim ruby tzdata postfix opendkim
 RUN gem install mail
@@ -6,6 +6,7 @@ RUN  mv /etc/postfix/main.cf /etc/postfix/main.cf.org
 COPY postfix/mailname /etc/
 COPY postfix/main.cf /etc/postfix/
 COPY postfix/master.cf /etc/postfix/
+COPY postfix/transport /etc/postfix/
 RUN  chmod 644 /etc/postfix/master.cf /etc/postfix/main.cf
 
 RUN  mv /etc/opendkim.conf /etc/opendkim.conf.org

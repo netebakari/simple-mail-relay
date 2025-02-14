@@ -1,5 +1,8 @@
-logs/
+logs/list/*
+logs/raw/*
 keys/*
+!logs/list/empty
+!logs/raw/empty
 !example.com.private
 !example.com.public
 
