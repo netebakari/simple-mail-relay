@@ -9,11 +9,13 @@
 # service type  private unpriv  chroot  wakeup  maxproc command + args
 #               (yes)   (yes)   (no)    (never) (100)
 # ==========================================================================
-smtp      inet  n       -        n       -       -       smtpd
+smtp       inet  n       -       n       -       -       smtpd
 #smtp      inet  n       -       y       -       1       postscreen
 #smtpd     pass  -       -       y       -       -       smtpd
 #dnsblog   unix  -       -       y       -       0       dnsblog
 #tlsproxy  unix  -       -       y       -       0       tlsproxy
+# Choose one: enable submission for loopback clients only, or for any client.
+#127.0.0.1:submission inet n -   y       -       -       smtpd
 #submission inet n       -       y       -       -       smtpd
 #  -o syslog_name=postfix/submission
 #  -o smtpd_tls_security_level=encrypt
@@ -26,6 +28,8 @@ smtp      inet  n       -        n       -       -       smtpd
 #  -o smtpd_recipient_restrictions=
 #  -o smtpd_relay_restrictions=permit_sasl_authenticated,reject
 #  -o milter_macro_daemon_name=ORIGINATING
+# Choose one: enable smtps for loopback clients only, or for any client.
+#127.0.0.1:smtps inet n  -       y       -       -       smtpd
 #smtps     inet  n       -       y       -       -       smtpd
 #  -o syslog_name=postfix/smtps
 #  -o smtpd_tls_wrappermode=yes

@@ -16,31 +16,31 @@ append_dot_mydomain = no
 
 readme_directory = no
 
-# See http://www.postfix.org/COMPATIBILITY_README.html -- default to 2 on
+# See http://www.postfix.org/COMPATIBILITY_README.html -- default to 3.6 on
 # fresh installs.
-compatibility_level = 2
+compatibility_level = 3.6
 
 # TLS parameters
 smtpd_tls_cert_file=/etc/ssl/certs/ssl-cert-snakeoil.pem
 smtpd_tls_key_file=/etc/ssl/private/ssl-cert-snakeoil.key
-smtpd_use_tls=yes
-smtpd_tls_session_cache_database = btree:${data_directory}/smtpd_scache
-smtp_tls_session_cache_database = btree:${data_directory}/smtp_scache
+smtpd_tls_security_level=may
 
-# See /usr/share/doc/postfix/TLS_README.gz in the postfix-doc package for
-# information on enabling SSL in the smtp client.
+smtp_tls_CApath=/etc/ssl/certs
+smtp_tls_security_level=may
+smtp_tls_session_cache_database = btree:${data_directory}/smtp_scache
 
 smtpd_relay_restrictions = permit_mynetworks permit_sasl_authenticated defer_unauth_destination
 myhostname = localhost
 alias_maps = hash:/etc/aliases
 alias_database = hash:/etc/aliases
-mydestination = $myhostname, /etc/mailname, 7dc057fac76a, localhost.localdomain, localhost
-relayhost =
-mynetworks = 0.0.0.0/0
+mydestination = $myhostname, localhost.localdomain, localhost
+transport_maps = hash:/etc/postfix/transport
+
+mynetworks = 10.0.0.0/8 172.16.0.0/12 192.168.0.0/16
 mailbox_size_limit = 0
 recipient_delimiter = +
 inet_interfaces = all
-inet_protocols = all
+inet_protocols = ipv4
 
 maillog_file = /dev/stdout
 
