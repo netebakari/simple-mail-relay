@@ -13,6 +13,9 @@
 ## 動作確認環境
 Ubuntu 22.04 LTS + Docker 27.5.1
 
+## Docker Hub
+https://hub.docker.com/r/netebakari/ubuntu-postfix-opendkim
+
 ## ログ
 ### Postfixのログ
 標準出力に吐いているので `Docker logs` または `docker-compose logs` で見られる。
@@ -22,29 +25,25 @@ Ubuntu 22.04 LTS + Docker 27.5.1
 * `logs/raw` にはメール1件を1個のテキストファイルにしたログがたまる。
 
 ## 起動方法
-### 1. DKIM設定
+### 1. ログ用ディレクトリ作成
+```sh
+$ mkdir -p logs/list
+$ mkdir -p logs/raw
+$ chmod 777 logs/list logs/raw
+```
+
+### 2. DKIM設定
 #### 鍵作成
 `opendkim-genkey` コマンドで鍵を作成し、 `keys/` 以下に `example.com.private` のような `FQDN + .private` という名前で配置する。
 
 複数ドメインの鍵を作る場合も同じ階層に入れる。
 
 #### 鍵登録
-公開鍵をDNSに登録する。 
+公開鍵をDNSに登録する。 DKIM検証は受信側が行うものなので、テストのためならこの手順はスキップしても良い。
 
 ```
 $ dig +short txt default._domainkey.example.com
 "v=DKIM1; k=rsa; p=MIIBIjANBgkqhkiG9w0...."
-```
-
-#### TrustedHosts修正
-`opendkim/TrustedHosts` を必要に応じて修正する。ここに記載されたIPアドレスから送られたメールがDKIMで署名される。
-
-```
-127.0.0.1
-10.0.0.0/8
-172.16.0.0/12
-192.168.0.0/16
-::1
 ```
 
 ### 2. テスト起動
@@ -56,7 +55,7 @@ docker compose up -d
 
 ### 3. メールテスト送信
 #### メール送信
-これでlocalhostの25番または1025番ポートにTELNETでアクセスしてメールが出せるようになった。DKIM設定を済ませてあるドメインを `From` に書けば署名が付く。
+これでlocalhostの25番または1025番ポートにTELNET（またはその他好きなツール）でアクセスしてメールが出せるようになった。DKIM設定を済ませてあるドメインのメールアドレスを `From` に書けば署名が付く。
 
 ```
 $ telnet localhost 1025
@@ -105,7 +104,16 @@ Hello World!
 実運用に使う場合は色々とやる必要がある。プライベートネットワークの中で運用することでなんとかなるとは思う。
 
 #### mailcatcherを外す
-`postfix/transport` を書き換える。これで外にメールが出ていくようになる。
+`compose.yaml` から `transport` ファイルをバインドしている部分をコメントアウトする。
+
+```
+    volumes:
+      - ./keys:/keys
+      - ./logs:/maillogs
+      #- ./transport_mailcatcher:/etc/postfix/transport
+```
+
+または、 `transport` ファイルを次のように書き換える。
 
 ```
 localhost   local:
