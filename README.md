@@ -46,14 +46,14 @@ $ dig +short txt default._domainkey.example.com
 "v=DKIM1; k=rsa; p=MIIBIjANBgkqhkiG9w0...."
 ```
 
-### 2. テスト起動
+### 3. テスト起動
 コンテナを起動する。初期状態では全てのメールが [mailcatcher](https://hub.docker.com/r/schickling/mailcatcher/) に転送される（他のサーバーへは出て行かない）。
 
 ```sh
 docker compose up -d
 ```
 
-### 3. メールテスト送信
+### 4. メールテスト送信
 #### メール送信
 これでlocalhostの25番または1025番ポートにTELNET（またはその他好きなツール）でアクセスしてメールが出せるようになった。DKIM設定を済ませてあるドメインのメールアドレスを `From` に書けば署名が付く。
 
@@ -100,29 +100,10 @@ Subject: Test
 Hello World!
 ```
 
-### 4. 設定をちゃんとする
-実運用に使う場合は色々とやる必要がある。プライベートネットワークの中で運用することでなんとかなるとは思う。
-
-#### mailcatcherを外す
-`compose.yaml` から `transport` ファイルをバインドしている部分をコメントアウトする。
-
-```
-    volumes:
-      - ./keys:/keys
-      - ./logs:/maillogs
-      #- ./transport_mailcatcher:/etc/postfix/transport
-```
-
-または、 `transport` ファイルを次のように書き換える。
+## 5. カスタムの transport ファイル
+メールをすべて特定のサーバーに転送したい場合などは、 Postfixの[transport](https://www.postfix.org/transport.5.html)⁠ファイルを作成し、 `/etc/postfix/transport` にマウントする。`postmap` コマンドはスタートアップ時に実行される。
 
 ```
 localhost   local:
-*           smtp:
+*           smtp:[email-smtp.ap-northeast-1.amazonaws.com]:25
 ```
-
-`compose.yaml` からも mailcatcher を外す。
-
-#### postfix/main.cf を変更する
-* `mynetworks` を適切な値に変更する。メールを送ってくるサーバーのIPアドレスに絞った方が良い。
-* `myhostname` を人に見られても恥ずかしくない値に変更する。
-* その他運用環境に合わせて設定を変更する。
