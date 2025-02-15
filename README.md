@@ -1,4 +1,4 @@
-# Ubuntu-Postfix-Oendkim
+# Ubuntu-Postfix-OpenDKIM
 Japanese README is [here](README_JP.md)
 
 # What is this?
