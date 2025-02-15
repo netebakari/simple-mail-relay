@@ -8,8 +8,8 @@ chown -R opendkim:opendkim /etc/dkimkeys/
 
 # depending on whether the transport file exists (binded)
 if [ ! -e /etc/postfix/transport ]; then
-    cat "localhost   local:" > /etc/postfix/transport
-    cat "*           smtp:" >> /etc/postfix/transport
+    echo 'localhost   local:' > /etc/postfix/transport
+    echo '*           smtp:' >> /etc/postfix/transport
 else
     chown root /etc/postfix/transport
 fi
