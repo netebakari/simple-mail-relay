@@ -1,5 +1,5 @@
 services:
-  server:
+  postfix:
     restart: 'always'
     build:
       context: ./
@@ -9,8 +9,9 @@ services:
       - 0.0.0.0:1025:25
     volumes:
       - ./keys:/keys
-      - ./logs/raw:/mailraw
-      - ./logs/list:/maillist
+      - ./logs/raw:/maillogs/raw
+      - ./logs/list:/maillogs/list
+      - ./transport:/etc/postfix/transport
     logging:
       options:
         max-size: "50m"
