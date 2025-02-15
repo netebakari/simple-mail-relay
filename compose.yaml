@@ -9,9 +9,8 @@ services:
       - 0.0.0.0:1025:25
     volumes:
       - ./keys:/keys
-      - ./logs/raw:/maillogs/raw
-      - ./logs/list:/maillogs/list
-      - ./transport:/etc/postfix/transport
+      - ./logs:/maillogs
+      - ./transport_mailcatcher:/etc/postfix/transport
     logging:
       options:
         max-size: "50m"
