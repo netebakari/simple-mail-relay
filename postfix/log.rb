@@ -27,11 +27,10 @@ end
 
 to      = join_something(mail.to)
 from    = join_something(mail.from)
-cc      = join_something(mail.cc)
 subject = mail.subject.gsub("\t", " ")
 
 open("/maillogs/list/#{date}.csv", "a"){|f|
-  f.puts [DateTime.now.to_s, to, from, cc, subject, mail.sender].join("\t")
+  f.puts [DateTime.now.to_s, to, from, subject].join("\t")
 }
 
 FileUtils.chmod(0666, "/maillogs/list/#{date}.csv")
