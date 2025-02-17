@@ -1,8 +1,8 @@
-# Ubuntu-Postfix-OpenDKIM
-Japanese README is [here](README_JP.md)
+# SimpleMailRelay
+README in Japanese is [here](README_JP.md)
 
 # What is this?
-A mail relay server. When you send mail to this container, it forwards the mail externally with a DKIM signature, depending on the sender domain. The DKIM selector is fixed to default.
+A simple mail relay server built with Postfix and OpenDKIM. When you send mail to this container, it forwards the mail externally with a DKIM signature, depending on the sender domain. Supports multiple domains. The DKIM selector is fixed to `default`.
 
 Docker Hub repository is [here](https://hub.docker.com/r/netebakari/ubuntu-postfix-opendkim).
 
@@ -15,7 +15,8 @@ Docker Hub repository is [here](https://hub.docker.com/r/netebakari/ubuntu-postf
 Ubuntu 22.04 LTS + Docker 27.5.1
 
 # Docker Hub
-https://hub.docker.com/r/netebakari/ubuntu-postfix-opendkim
+https://hub.docker.com/r/netebakari/simple-mail-relay
+
 
 # Logs
 ## Postfix log
@@ -28,12 +29,16 @@ Two types of log files are output:
 
 
 # How to Start
-## 1. Create Log Directories
+## 1. Create Mail Log Directories
 ```sh
 $ mkdir -p logs/list
 $ mkdir -p logs/raw
 $ chmod 777 logs/list logs/raw
+  or
+$ chown YOUR-USER-WHOSE-ID-IS-1000 logs/list logs/raw
 ```
+
+Mail logs are stored by the `maillog` user, whose user / group id is 1000:1000.
 
 ## 2. DKIM Configuration
 ### Create DKIM keys
@@ -82,24 +87,22 @@ QUIT
 Check the email body by mailcatcher (working at [http://localhost:1080](http://localhost:1080)) or log file in `/logs/raw/YYYY-MM-DD/`. It would be just like:
 
 ```
-From test@example.com  Fri Feb 14 06:29:47 2025
+From test@example.com  Mon Feb 17 13:20:08 2025
 Return-Path: <test@example.com>
 X-Original-To: logging@localhost
 Delivered-To: logging@localhost
-DKIM-Filter: OpenDKIM Filter v2.11.0 localhost 163543B422
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=example.com;
-    s=default; t=1739546987;
-    bh=z85OKVJZHnmg3qFlSpLbpPCZ00irfBdrzQUtabiSl3A=;
-    h=From:To:Subject:From;
-    b=Mj4Ru4JCf9dVMtAN9wcMG38/I91KGrKCVjI1rT3ORVfG3gP95XQdpabR6O4Gc07W6
-     Hbo4rbgV+MlGz06gkzpmeGTXlovEbY5v4WBdH56a21OX9ALYbPNQTadzp/fCcj93XG
-     X86qDjFmrXn3pHe0bvlFmEnynRLKffQl8Cw4zercSw8hsgtHlFc5HTPkNhna8mzM1W
-     jvTYblNPpyq6jgeG88TEDhR7Wt4MCOPH4iPFTX2VbzdY00YV8avI/+b2CUhQLJUkxC
-     buG+PfphmT9NkP8s9Y6mtmlikw6MUNSOPPGnO5MhgDg04Je1AChre+c1waV7fFh+1O
-     qnrFWlKqz9pLg==
-Received: from localhost (unknown [172.19.0.1])
-    by localhost (Postfix) with SMTP id 163543B422
-    for <someone@netebakari.local>; Fri, 14 Feb 2025 06:29:34 -0900 (AKST)
+Received: from localhost (unknown [172.18.0.1])
+	by postfix.netebakari.local (Postfix) with SMTP id 99D3D53C16
+	for <someone@netebakari.local>; Mon, 17 Feb 2025 13:19:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=example.com;
+	s=default; t=1739798408;
+	bh=z85OKVJZHnmg3qFlSpLbpPCZ00irfBdrzQUtabiSl3A=; h=From:To:Subject;
+	b=IIbFlx1MTKZcR7/OQiw7qVpfNEsh05BSrgZ7GIwXYGxXg/wpWUXb2JWyxbF31k7pB
+	 FDIAAi2tgj+/ULHSvPX44Phjnqc5yRetrWRJUUndD4bC9kYhZu4TpSwBjp3Mz4htgY
+	 5Rnmg0YwXqcEqU8PKpJqSo0k+JTbZ6xbuOEg73YLHdjq3XAneFWBUV8VubcRjp/owk
+	 yzR/Ke2eoturx7ajGvt+qMBFZvuFasg8OHjSGPp+pOscH5ZLH5SfG3DQycwBigswxC
+	 nKot1SLEEYlWIQVRyiLBSADYRwqnrM2WvD46m7eXuOIPJlH/mfEV25/9QC1yM+73lt
+	 K3binxrS+YCzA==
 From: test@example.com
 To: someone@netebakari.local
 Subject: Test
@@ -107,10 +110,24 @@ Subject: Test
 Hello World!
 ```
 
-## 5. Custom Transport File
-If you would like forwar emails to a specific server, create a Postfix [transport](https://www.postfix.org/transport.5.html)⁠ file and mount it to `/etc/postfix/transport`. The `postmap` command is executed at start up time.
+## 5. Postfix Configuration
+### Change server name
+Change the `SERVERNAME` environment variable in `compose.yaml` to the server's FQDN. It is highly recommended that this FQDN be reverse resolvable.
+
+### Customize `transport` file
+If you want this mail relay server to deliver mail **directly to the internet**, comment out the `/etc/postfix/transport` mount in `compose.yaml`. A `transport` file with the following content will be automatically generated and used:
+
+```
+localhost   local:
+*           smtp:
+```
+
+If you would like forward mails to a specific server, create a Postfix [transport](https://www.postfix.org/transport.5.html)⁠ file and mount it to `/etc/postfix/transport`. The `postmap` command is executed at start up time.
 
 ```
 localhost   local:
 *           smtp:[email-smtp.ap-northeast-1.amazonaws.com]:25
 ```
+
+### Remove mailcatcher
+Remove mailcathcer in `compose.yaml` if you don't need it.

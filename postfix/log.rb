@@ -7,7 +7,7 @@ raw = STDIN.read
 date = DateTime.now.strftime("%Y-%m-%d")
 timestamp = DateTime.now.strftime("%Y%m%d_%H%M%S.%L")
 
-unless Dir.exists?("/maillogs/raw/#{date}") then
+unless Dir.exist?("/maillogs/raw/#{date}") then
   Dir.mkdir("/maillogs/raw/#{date}")
   FileUtils.chmod(0777, "/maillogs/raw/#{date}")
 end
@@ -27,11 +27,10 @@ end
 
 to      = join_something(mail.to)
 from    = join_something(mail.from)
-cc      = join_something(mail.cc)
 subject = mail.subject.gsub("\t", " ")
 
 open("/maillogs/list/#{date}.csv", "a"){|f|
-  f.puts [DateTime.now.to_s, to, from, cc, subject, mail.sender].join("\t")
+  f.puts [DateTime.now.to_s, to, from, subject].join("\t")
 }
 
 FileUtils.chmod(0666, "/maillogs/list/#{date}.csv")

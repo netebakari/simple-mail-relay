@@ -1,9 +1,9 @@
-# Ubuntu-Postfix-Opendkim
+# SimpleMailRelay
 
 ## 概要
-メール転送サーバー。
-このコンテナにメールを平文で送ると、送信元ドメインに応じて外部にDKIM署名付きでメールを転送する。
-証明書はドメイン単位で固定。メールアドレスごとに証明書を変えることはできない。またDKIMのセレクタは `default` 固定。
+Postfix + OpenDKIM のシンプルなメール転送サーバー。
+
+このコンテナにメールを送ると、送信元ドメインに応じて外部にDKIM署名付きでメールを転送する。複数のドメインに対応。DKIMのセレクタは `default` 固定。
 
 ## モチベーション
 * シンプルなメール中継サーバーが欲しい
@@ -14,7 +14,7 @@
 Ubuntu 22.04 LTS + Docker 27.5.1
 
 ## Docker Hub
-https://hub.docker.com/r/netebakari/ubuntu-postfix-opendkim
+https://hub.docker.com/r/netebakari/simple-mail-relay
 
 ## ログ
 ### Postfixのログ
@@ -25,12 +25,16 @@ https://hub.docker.com/r/netebakari/ubuntu-postfix-opendkim
 * `logs/raw` にはメール1件を1個のテキストファイルにしたログがたまる。
 
 ## 起動方法
-### 1. ログ用ディレクトリ作成
+### 1. メールログ用ディレクトリ作成
 ```sh
 $ mkdir -p logs/list
 $ mkdir -p logs/raw
 $ chmod 777 logs/list logs/raw
+  または
+$ chown IDが1000のユーザー logs/list logs/raw
 ```
+
+メールログはコンテナ内でユーザーID・グループIDが 1000:1000 の `maillog` ユーザーとして保存される。
 
 ### 2. DKIM設定
 #### 鍵作成
@@ -100,10 +104,24 @@ Subject: Test
 Hello World!
 ```
 
-## 5. カスタムの transport ファイル
-メールをすべて特定のサーバーに転送したい場合などは、 Postfixの[transport](https://www.postfix.org/transport.5.html)⁠ファイルを作成し、 `/etc/postfix/transport` にマウントする。`postmap` コマンドはスタートアップ時に実行される。
+## 5. Postfixの設定
+### サーバー名変更
+`compose.yaml` で `SERVERNAME` 環境変数を適切なFQDNに書き換える。これは逆引きできることが望ましい。
+
+### カスタムの transport ファイル
+このメール転送サーバーからメールを **直接インターネットに配信** したい場合は、`compose.yaml` の中で `/etc/postfix/transport` へのマウントをコメントアウトする。自動的に次の内容の transport ファイルが作成されて利用される。
+
+```
+localhost   local:
+*           smtp:
+```
+
+メールをすべて特定のサーバーに転送したい場合は、 Postfixの[transport](https://www.postfix.org/transport.5.html)⁠ファイルを作成し、 `/etc/postfix/transport` にマウントする。`postmap` コマンドはスタートアップ時に実行される。
 
 ```
 localhost   local:
 *           smtp:[email-smtp.ap-northeast-1.amazonaws.com]:25
 ```
+
+### mailcatcherを外す
+不要なら `compose.yaml` からmailcatcherを外す。

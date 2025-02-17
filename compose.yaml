@@ -11,6 +11,8 @@ services:
       - ./keys:/keys
       - ./logs:/maillogs
       - ./transport_mailcatcher:/etc/postfix/transport
+    environment:
+      - SERVERNAME=postfix.netebakari.local
     logging:
       options:
         max-size: "50m"
