@@ -7,7 +7,7 @@ raw = STDIN.read
 date = DateTime.now.strftime("%Y-%m-%d")
 timestamp = DateTime.now.strftime("%Y%m%d_%H%M%S.%L")
 
-unless Dir.exists?("/maillogs/raw/#{date}") then
+unless Dir.exist?("/maillogs/raw/#{date}") then
   Dir.mkdir("/maillogs/raw/#{date}")
   FileUtils.chmod(0777, "/maillogs/raw/#{date}")
 end
