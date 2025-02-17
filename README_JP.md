@@ -10,11 +10,11 @@ Postfix + OpenDKIM のシンプルなメール転送サーバー。
 * ストレージの容量が許す限り、いつ・誰に・どんなメールを送ったかのログは残しておきたい
 * Postfixのログは標準出力に出して取り回しを良くしたい
 
-## 動作確認環境
-Ubuntu 22.04 LTS + Docker 27.5.1
-
 ## Docker Hub
 https://hub.docker.com/r/netebakari/simple-mail-relay
+
+## 動作確認環境
+Ubuntu 22.04 LTS + Docker 27.5.1
 
 ## ログ
 ### Postfixのログ
