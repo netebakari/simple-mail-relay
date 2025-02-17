@@ -1,8 +1,8 @@
-# Ubuntu-Postfix-OpenDKIM
-Japanese README is [here](README_JP.md)
+# SimpleMailrelay
+README in Japanese is [here](README_JP.md)
 
 # What is this?
-A mail relay server. When you send mail to this container, it forwards the mail externally with a DKIM signature, depending on the sender domain. The DKIM selector is fixed to default.
+A simple mail relay server built with Postfix and OpenDKIM. When you send mail to this container, it forwards the mail externally with a DKIM signature, depending on the sender domain. Supports multiple domains. The DKIM selector is fixed to `default`.
 
 Docker Hub repository is [here](https://hub.docker.com/r/netebakari/ubuntu-postfix-opendkim).
 
@@ -15,7 +15,8 @@ Docker Hub repository is [here](https://hub.docker.com/r/netebakari/ubuntu-postf
 Ubuntu 22.04 LTS + Docker 27.5.1
 
 # Docker Hub
-https://hub.docker.com/r/netebakari/ubuntu-postfix-opendkim
+https://hub.docker.com/r/netebakari/simple-mail-relay
+
 
 # Logs
 ## Postfix log

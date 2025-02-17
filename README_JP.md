@@ -1,9 +1,9 @@
-# Ubuntu-Postfix-Opendkim
+# SimpleMailRelay
 
 ## 概要
-メール転送サーバー。
-このコンテナにメールを平文で送ると、送信元ドメインに応じて外部にDKIM署名付きでメールを転送する。
-証明書はドメイン単位で固定。メールアドレスごとに証明書を変えることはできない。またDKIMのセレクタは `default` 固定。
+Postfix + OpenDKIM のシンプルなメール転送サーバー。
+
+このコンテナにメールを送ると、送信元ドメインに応じて外部にDKIM署名付きでメールを転送する。複数のドメインに対応。DKIMのセレクタは `default` 固定。
 
 ## モチベーション
 * シンプルなメール中継サーバーが欲しい
@@ -14,7 +14,7 @@
 Ubuntu 22.04 LTS + Docker 27.5.1
 
 ## Docker Hub
-https://hub.docker.com/r/netebakari/ubuntu-postfix-opendkim
+https://hub.docker.com/r/netebakari/simple-mail-relay
 
 ## ログ
 ### Postfixのログ
