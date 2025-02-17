@@ -1,4 +1,4 @@
-# SimpleMailrelay
+# SimpleMailRelay
 README in Japanese is [here](README_JP.md)
 
 # What is this?
