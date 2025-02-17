@@ -25,12 +25,16 @@ https://hub.docker.com/r/netebakari/ubuntu-postfix-opendkim
 * `logs/raw` にはメール1件を1個のテキストファイルにしたログがたまる。
 
 ## 起動方法
-### 1. ログ用ディレクトリ作成
+### 1. メールログ用ディレクトリ作成
 ```sh
 $ mkdir -p logs/list
 $ mkdir -p logs/raw
 $ chmod 777 logs/list logs/raw
+  または
+$ chown IDが1000のユーザー logs/list logs/raw
 ```
+
+メールログはコンテナ内でユーザーID・グループIDが 1000:1000 の `maillog` ユーザーとして保存される。
 
 ### 2. DKIM設定
 #### 鍵作成

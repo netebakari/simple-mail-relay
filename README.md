@@ -28,12 +28,16 @@ Two types of log files are output:
 
 
 # How to Start
-## 1. Create Log Directories
+## 1. Create Mail Log Directories
 ```sh
 $ mkdir -p logs/list
 $ mkdir -p logs/raw
 $ chmod 777 logs/list logs/raw
+  or
+$ chown YOUR-USER-WHOSE-ID-IS-1000 logs/list logs/raw
 ```
+
+Mail logs are stored by the `maillog` user, whose user / group id is 1000:1000.
 
 ## 2. DKIM Configuration
 ### Create DKIM keys
