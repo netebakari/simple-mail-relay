@@ -6,6 +6,11 @@ cat /tmp/domains.txt | awk '{print "default._domainkey." $1 " " $1 ":default:/et
 cat /tmp/domains.txt | awk '{print "mkdir -p /etc/dkimkeys/" $1 "; cp /keys/" $1 ".private /etc/dkimkeys/" $1 "; chmod 600 /etc/dkimkeys/" $1 "/" $1 ".private"}' | /bin/bash
 chown -R opendkim:opendkim /etc/dkimkeys/
 
+# determine the server name
+if [ "$SERVERNAME" != "" ]; then
+    echo "myhostname = $SERVERNAME" >> /etc/postfix/main.cf
+fi
+
 # depending on whether the transport file exists
 if [ ! -e /etc/postfix/transport ]; then
     echo 'localhost   local:' > /etc/postfix/transport

@@ -5,7 +5,6 @@ RUN  mv /etc/postfix/master.cf /etc/postfix/master.cf.org
 COPY postfix/main.cf /etc/postfix/
 COPY postfix/master.cf /etc/postfix/
 RUN  chmod 644 /etc/postfix/master.cf /etc/postfix/main.cf
-RUN  echo "hostname -f" > /etc/mailname
 
 # OpenDKIM
 RUN  mv /etc/opendkim/opendkim.conf /etc/opendkim/opendkim.conf.org
