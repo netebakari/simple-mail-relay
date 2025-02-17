@@ -104,10 +104,24 @@ Subject: Test
 Hello World!
 ```
 
-## 5. カスタムの transport ファイル
-メールをすべて特定のサーバーに転送したい場合などは、 Postfixの[transport](https://www.postfix.org/transport.5.html)⁠ファイルを作成し、 `/etc/postfix/transport` にマウントする。`postmap` コマンドはスタートアップ時に実行される。
+## 5. Postfixの設定
+### サーバー名変更
+`compose.yaml` で `SERVERNAME` 環境変数を適切なFQDNに書き換える。これは逆引きできることが望ましい。
+
+### カスタムの transport ファイル
+このメール転送サーバーからメールを **直接インターネットに配信** したい場合は、`compose.yaml` の中で `/etc/postfix/transport` へのマウントをコメントアウトする。自動的に次の内容の transport ファイルが作成されて利用される。
+
+```
+localhost   local:
+*           smtp:
+```
+
+メールをすべて特定のサーバーに転送したい場合は、 Postfixの[transport](https://www.postfix.org/transport.5.html)⁠ファイルを作成し、 `/etc/postfix/transport` にマウントする。`postmap` コマンドはスタートアップ時に実行される。
 
 ```
 localhost   local:
 *           smtp:[email-smtp.ap-northeast-1.amazonaws.com]:25
 ```
+
+### mailcatcherを外す
+不要なら `compose.yaml` からmailcatcherを外す。

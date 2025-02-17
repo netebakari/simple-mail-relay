@@ -97,6 +97,8 @@ default_privs = maillog
 #
 #myhostname = host.domain.tld
 #myhostname = virtual.domain.tld
+# *** myhostname is appended by startup.sh ***
+# myhostname = XXXX
 
 # The mydomain parameter specifies the local internet domain name.
 # The default is to use $myhostname minus the first component.
@@ -589,6 +591,7 @@ alias_database = lmdb:/etc/postfix/aliases
 #
 #smtpd_banner = $myhostname ESMTP $mail_name
 #smtpd_banner = $myhostname ESMTP $mail_name ($mail_version)
+smtpd_banner = $myhostname ESMTP $mail_name ($mail_version)
 
 # PARALLEL DELIVERY TO THE SAME DESTINATION
 #
